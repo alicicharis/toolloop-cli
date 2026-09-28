@@ -2,7 +2,7 @@
 
 Ordered by build sequence.
 
-## 1. Project groundwork and config - to do
+## 1. Project groundwork and config - done
 
 **What:** Running `uv run toolloop` starts the app, or refuses to start with a single message naming every missing env var. `make check` runs lint, format check, types and tests.
 
