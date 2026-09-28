@@ -238,6 +238,42 @@ def test_max_tokens_with_tool_use_block_aborts_and_leaves_history_unchanged() ->
     assert history == original
 
 
+def test_refusal_aborts_and_leaves_history_unchanged() -> None:
+    api = FakeMessagesAPI(
+        [
+            make_message([text_block("partial")], "refusal"),
+        ]
+    )
+    history: list[MessageParam] = [{"role": "user", "content": "prior"}]
+    original = list(history)
+    observer = RecordingObserver()
+
+    result = run_turn(api, "fake-model", "sys", REGISTRY, history, "hello", observer)
+
+    assert result == Aborted(
+        "The model declined to respond. Your message was not kept."
+    )
+    assert history == original
+
+
+def test_end_turn_with_no_text_block_aborts_and_leaves_history_unchanged() -> None:
+    api = FakeMessagesAPI(
+        [
+            make_message([], "end_turn"),
+        ]
+    )
+    history: list[MessageParam] = [{"role": "user", "content": "prior"}]
+    original = list(history)
+    observer = RecordingObserver()
+
+    result = run_turn(api, "fake-model", "sys", REGISTRY, history, "hello", observer)
+
+    assert result == Aborted(
+        "The model returned an empty response. Your message was not kept."
+    )
+    assert history == original
+
+
 def test_max_tokens_on_text_returns_truncated_answer_and_commits() -> None:
     api = FakeMessagesAPI(
         [
