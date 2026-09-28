@@ -16,7 +16,7 @@ Ordered by build sequence.
 - `argparse` handles one flag, `--model`, defaulting to `claude-sonnet-5`
 - `make check` runs ruff check, ruff format --check, pyright and pytest
 
-## 2. Agent loop and tool dispatch - to do
+## 2. Agent loop and tool dispatch - done
 
 **What:** Given a history and a user message, the loop calls the model, runs the tools it asks for, feeds the results back, and repeats until the model answers. It handles every failure path without corrupting history.
 
