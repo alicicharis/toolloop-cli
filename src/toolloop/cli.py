@@ -1,9 +1,23 @@
 """Entry point for the toolloop CLI."""
 
 import argparse
-import sys
+import logging
 
+# Imported for its side effect: once loaded, input() gets arrow-key line
+# editing and in-session history.
+import readline  # noqa: F401  # pyright: ignore[reportUnusedImport]
+import sys
+from datetime import date
+from pathlib import Path
+
+import anthropic
+from rich.console import Console
+from rich.logging import RichHandler
+
+from toolloop.agent import build_system_prompt
 from toolloop.config import ConfigError, load_config
+from toolloop.dispatch import Registry
+from toolloop.repl import run_repl
 
 
 def main() -> None:
@@ -16,10 +30,29 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        load_config(args.model)
+        config = load_config(args.model)
     except ConfigError as e:
         print(str(e), file=sys.stderr)
         sys.exit(1)
+
+    # Tracebacks from bugs (see dispatch.py) go to stderr so they don't mix
+    # with the chat output on stdout.
+    logging.basicConfig(
+        level=logging.WARNING,
+        format="%(message)s",
+        handlers=[RichHandler(console=Console(stderr=True), rich_tracebacks=True)],
+    )
+
+    client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+    registry: Registry = {}  # Tools arrive in later items.
+    run_repl(
+        client.messages,
+        config.model,
+        build_system_prompt(date.today(), Path.cwd()),
+        registry,
+        Console(),
+        input,
+    )
 
 
 if __name__ == "__main__":
