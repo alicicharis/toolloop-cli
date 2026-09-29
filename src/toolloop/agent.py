@@ -63,13 +63,52 @@ class Aborted:
     reason: str
 
 
+# Without this rule the model answers general questions ("What is the capital of
+# Bosnia?") from its own knowledge. Keeping every answer grounded in a tool
+# result is the point of the app: the user can see in the trace where it came
+# from. Tools are referred to generically so the rule stays true as tools are
+# added; the model already sees the registered tool list.
+_SCOPE_RULES = """\
+Answer only with information from your tools. Never answer a factual question
+from your own knowledge, even when you are sure of the answer.
+- If a tool can answer the question, call it and base your answer on its result.
+- If no tool can answer it, say so, briefly list what your tools can do, and stop.
+- If a tool fails, say so plainly instead of guessing.
+- Greetings, questions about what you can do, and follow-ups about earlier tool
+  results can be answered directly.
+
+<examples>
+<example type="good">
+User: What is 17% of 2340?
+Assistant: calls the calculator with "0.17 * 2340", then answers "17% of 2340 is
+397.8."
+</example>
+<example type="good">
+User: What is the capital of Bosnia?
+Assistant, with a web search tool: searches, then answers from the results and
+names the source.
+Assistant, with no tool that fits: "I can only answer using my tools, and none of
+them covers that. I can do math, ..."
+</example>
+<example type="bad">
+User: What is the capital of Bosnia?
+Assistant: "The capital of Bosnia and Herzegovina is Sarajevo."
+Why it is bad: answered from memory without calling a tool.
+</example>
+<example type="bad">
+User: What is sqrt(2) * 10?
+Assistant: calls the calculator, the call fails, then answers "About 14.14."
+Why it is bad: guessed after a tool failure instead of reporting it.
+</example>
+</examples>"""
+
+
 def build_system_prompt(today: date, root: Path) -> str:
     """Build the system prompt. Pure, so item 3 can call it once at startup."""
     return (
         f"Today's date is {today.isoformat()}.\n"
-        f"The file-reader tool is rooted at {root}.\n"
-        "Use tools when they help answer the user, and say so plainly when "
-        "a tool fails instead of guessing."
+        f"The file-reader tool is rooted at {root}.\n\n"
+        f"{_SCOPE_RULES}"
     )
 
 

@@ -33,7 +33,7 @@ Ordered by build sequence.
 - `max_tokens` is 4096
 - The iteration cap triggers a rollback plus a "stopped after 10 tool iterations" message
 - API errors after the SDK's built-in retries trigger a rollback and an error message, and the REPL stays alive
-- System prompt: today's date, the file-reader root (the working directory), and one line telling the model to use tools when needed and say so when one fails. Guidance for each tool lives in that tool's schema description
+- System prompt: today's date, the file-reader root (the working directory), and scope rules with good and bad examples: answer only from tool results (never from the model's own knowledge), decline when no tool fits, and say so when a tool fails. Guidance for each tool lives in that tool's schema description
 - Tests use a fake client and cover:
   - the happy path
   - `ToolError` becoming an `is_error` result
