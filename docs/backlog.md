@@ -42,7 +42,7 @@ Ordered by build sequence.
   - the iteration cap
   - rollback on API failure
 
-## 3. REPL and terminal UI - to do
+## 3. REPL and terminal UI - done
 
 **What:** A multi-turn chat in the terminal. You can see which tools ran and which failed, you get feedback while the model is thinking, and answers are rendered as Markdown.
 
