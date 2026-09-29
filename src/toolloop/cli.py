@@ -18,6 +18,7 @@ from toolloop.agent import build_system_prompt
 from toolloop.config import ConfigError, load_config
 from toolloop.dispatch import Registry
 from toolloop.repl import run_repl
+from toolloop.tools import calculator
 
 
 def main() -> None:
@@ -44,7 +45,8 @@ def main() -> None:
     )
 
     client = anthropic.Anthropic(api_key=config.anthropic_api_key)
-    registry: Registry = {}  # Tools arrive in later items.
+    # The remaining tools arrive in later items.
+    registry: Registry = {"calculator": (calculator.SCHEMA, calculator.calculate)}
     run_repl(
         client.messages,
         config.model,
