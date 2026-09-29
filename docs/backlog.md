@@ -56,7 +56,7 @@ Ordered by build sequence.
 - Bug tracebacks go to stderr via `logging` with `RichHandler`
 - When the API rejects the context as too long, the rollback message suggests `/clear`
 
-## 4. Calculator tool - to do
+## 4. Calculator tool - done
 
 **What:** The model can evaluate arithmetic and common math functions safely. Hostile or unsupported input gets a clear error instead of running code or hanging.
 
