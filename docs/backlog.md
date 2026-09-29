@@ -68,7 +68,7 @@ Ordered by build sequence.
 - Exponentiation is bounded (e.g. `10**10**10` is rejected rather than hanging)
 - Unit tests: valid expressions, unsupported constructs, exponent bombs
 
-## 5. File reader tool - to do
+## 5. File reader tool - done
 
 **What:** The model can read text files under the working directory, and nothing outside it.
 
