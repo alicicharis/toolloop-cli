@@ -11,6 +11,7 @@ from datetime import date
 from pathlib import Path
 
 import anthropic
+import httpx
 from rich.console import Console
 from rich.logging import RichHandler
 
@@ -18,7 +19,7 @@ from toolloop.agent import build_system_prompt
 from toolloop.config import ConfigError, load_config
 from toolloop.dispatch import Registry
 from toolloop.repl import run_repl
-from toolloop.tools import calculator, file_reader
+from toolloop.tools import calculator, file_reader, weather
 
 
 def main() -> None:
@@ -46,19 +47,21 @@ def main() -> None:
 
     client = anthropic.Anthropic(api_key=config.anthropic_api_key)
     root = Path.cwd()
-    # The remaining tools arrive in later items.
-    registry: Registry = {
-        "calculator": (calculator.SCHEMA, calculator.calculate),
-        "read_file": (file_reader.SCHEMA, file_reader.make_read_file(root)),
-    }
-    run_repl(
-        client.messages,
-        config.model,
-        build_system_prompt(date.today(), root),
-        registry,
-        Console(),
-        input,
-    )
+    with httpx.Client() as http:
+        # The remaining tools arrive in later items.
+        registry: Registry = {
+            "calculator": (calculator.SCHEMA, calculator.calculate),
+            "read_file": (file_reader.SCHEMA, file_reader.make_read_file(root)),
+            "get_weather": (weather.SCHEMA, weather.make_get_weather(http)),
+        }
+        run_repl(
+            client.messages,
+            config.model,
+            build_system_prompt(date.today(), root),
+            registry,
+            Console(),
+            input,
+        )
 
 
 if __name__ == "__main__":
