@@ -80,7 +80,7 @@ Ordered by build sequence.
 - Missing files, directories and permission errors raise `ToolError`
 - Unit tests: sandbox escapes (`..`, symlinks), binary files, truncation
 
-## 6. Weather tool - to do
+## 6. Weather tool - done
 
 **What:** The model can get current weather for a named place, and can tell which place was actually resolved.
 
