@@ -93,7 +93,7 @@ Ordered by build sequence.
 - Current conditions only (temperature, feels-like, wind, precipitation, condition text from the WMO code). Metric only, with no forecast and no units parameter
 - Tests cover result shaping against mocked HTTP
 
-## 7. Web search tool - to do
+## 7. Web search tool - done
 
 **What:** The model can search the web and get a compact, sourced list of results.
 
