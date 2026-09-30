@@ -19,7 +19,7 @@ from toolloop.agent import build_system_prompt
 from toolloop.config import ConfigError, load_config
 from toolloop.dispatch import Registry
 from toolloop.repl import run_repl
-from toolloop.tools import calculator, file_reader, weather
+from toolloop.tools import calculator, file_reader, weather, web_search
 
 
 def main() -> None:
@@ -48,11 +48,14 @@ def main() -> None:
     client = anthropic.Anthropic(api_key=config.anthropic_api_key)
     root = Path.cwd()
     with httpx.Client() as http:
-        # The remaining tools arrive in later items.
         registry: Registry = {
             "calculator": (calculator.SCHEMA, calculator.calculate),
             "read_file": (file_reader.SCHEMA, file_reader.make_read_file(root)),
             "get_weather": (weather.SCHEMA, weather.make_get_weather(http)),
+            "web_search": (
+                web_search.SCHEMA,
+                web_search.make_web_search(http, config.tavily_api_key),
+            ),
         }
         run_repl(
             client.messages,
