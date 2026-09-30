@@ -104,7 +104,7 @@ Ordered by build sequence.
 - Returns `title / url / snippet` (Tavily's `content`) for each result
 - Tests cover result shaping against mocked HTTP
 
-## 8. README - to do
+## 8. README - done
 
 **What:** A reader landing on the repo understands what the project demonstrates and can run it within minutes.
 
